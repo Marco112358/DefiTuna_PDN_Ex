@@ -93,6 +93,8 @@ df0_net_delta = process_dataframe_summaries(df0_1_delta, df0_7_delta, df0_30_del
 df0_net_gamma = process_dataframe_summaries(df0_1_gamma, df0_7_gamma, df0_30_gamma, ["Net Empirical Gamma"], P)
 
 # Generate Net % PnL Graph and Show
+highlight_low = pa / P * 100 - 100
+highlight_high = pb / P * 100 - 100
 fig1 = create_line_graph(data=df0_equity,
                          title=f"Profit/Loss vs. SOL Price Change with Daily Fees: {round(debt_daily_cost * 100, 4)}% and Daily Yield: {round(trading_fee_daily_yield * 100, 4)}%",
                          xaxis_title="Percent Change in SOL Price",
@@ -100,7 +102,7 @@ fig1 = create_line_graph(data=df0_equity,
                          legend_title="Time Period",
                          xaxis_dtick=2.0,
                          yaxis_dtick=2.0,
-                         highlight_range=(-5, 5))
+                         highlight_range=(-highlight_low, highlight_high))
 fig1.show()
 
 # Generate Net SOL Token Exposure Graph and Show
