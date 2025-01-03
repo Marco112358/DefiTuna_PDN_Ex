@@ -1,13 +1,14 @@
 import numpy as np
 import pandas as pd
-from functions import get_L, get_pa, get_LP_pos_price_range, add_empirical_delta, add_empirical_gamma, process_dataframe_summaries, create_line_graph
+from functions import (get_L, get_pa, get_LP_pos_price_range, add_empirical_delta, add_empirical_gamma,
+                       process_dataframe_summaries, create_line_graph, add_hodl_position)
 
 # Global Params
 # Set a price range to test, MIN/MAX/STEP
-price_range = np.arange(150, 250, 0.01)
+price_range = np.arange(170, 230, 0.01)
 # price_range = np.arange(150, 250, 1.0)
 debt_daily_cost = (1 + 0.4) ** (1 / 365) - 1  # 40% APY Interest Cost
-trading_fee_daily_yield = (1 + 1.0) ** (1 / 365)  - 1 # 100% APY Yield from LP Fees
+trading_fee_daily_yield = (1 + 1.0) ** (1 / 365) - 1  # 100% APY Yield from LP Fees
 
 ## Initial Params for example 0, 400 USDC position
 X = 0  # SOL
@@ -66,6 +67,13 @@ df0_30 = get_LP_pos_price_range(price_range,
                                 trading_fee_daily_yield,
                                 30,
                                 TV_start)
+
+# Add HODL Columns
+df0_7 = add_hodl_position(df0_7, 0.5, 0, P)
+df0_1 = add_hodl_position(df0_1, 0.5, 0, P)
+df0_30 = add_hodl_position(df0_30, 0.5, 0, P)
+
+
 # Get Empirical Delta
 df0_7_delta = add_empirical_delta(df0_7.copy())
 df0_1_delta = add_empirical_delta(df0_1.copy())
@@ -76,13 +84,13 @@ df0_1_gamma = add_empirical_gamma(df0_1_delta.copy())
 df0_30_gamma = add_empirical_gamma(df0_30_delta.copy())
 
 # Process net equity % PnL
-df0_equity = process_dataframe_summaries(df0_1, df0_7, df0_30, "Equity Return", P)
+df0_equity = process_dataframe_summaries(df0_1, df0_7, df0_30, ["Equity Return", "HODL Return"], P)
 # Process net SOL position
-df0_net_sol = process_dataframe_summaries(df0_1, df0_7, df0_30, "Net X Tokens", P)
+df0_net_sol = process_dataframe_summaries(df0_1, df0_7, df0_30, ["Net X Tokens"], P)
 # Process net empirical delta
-df0_net_delta = process_dataframe_summaries(df0_1_delta, df0_7_delta, df0_30_delta, "Net Empirical Delta", P)
+df0_net_delta = process_dataframe_summaries(df0_1_delta, df0_7_delta, df0_30_delta, ["Net Empirical Delta"], P)
 # Process net empirical delta
-df0_net_gamma = process_dataframe_summaries(df0_1_gamma, df0_7_gamma, df0_30_gamma, "Net Empirical Gamma", P)
+df0_net_gamma = process_dataframe_summaries(df0_1_gamma, df0_7_gamma, df0_30_gamma, ["Net Empirical Gamma"], P)
 
 # Generate Net % PnL Graph and Show
 fig1 = create_line_graph(data=df0_equity,
@@ -91,7 +99,8 @@ fig1 = create_line_graph(data=df0_equity,
                          yaxis_title="Estimated % Profit/Loss",
                          legend_title="Time Period",
                          xaxis_dtick=2.0,
-                         yaxis_dtick=2.0)
+                         yaxis_dtick=2.0,
+                         highlight_range=(-5, 5))
 fig1.show()
 
 # Generate Net SOL Token Exposure Graph and Show
