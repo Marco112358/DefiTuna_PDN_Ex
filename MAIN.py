@@ -138,6 +138,8 @@ print(f"The starting USDC Debt Tokens is: {y_debt}")
 print(f"The starting Total Debt is: {tot_debt_val}")
 print(f"The starting SOL to LP is: {x_to_lp}")
 print(f"The starting USDC to LP is: {y_to_lp}")
+print(f"The lower price bound of the CLAMM is is: {pa}")
+print(f"The upper price bound of the CLAMM is is: {pb}")
 
 '''
 ## Initial Params for example 1, 1 SOL and 200 USDC position
