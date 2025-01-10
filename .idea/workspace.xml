@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f1eeab3-abfd-4bfa-8642-ada125c31876" name="Changes" comment="2 additional prints">
+    <list default="true" id="0f1eeab3-abfd-4bfa-8642-ada125c31876" name="Changes" comment="Added hodl line, highlighted the range">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MAIN.py" beforeDir="false" afterPath="$PROJECT_DIR$/MAIN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/functions.py" afterDir="false" />
@@ -52,6 +52,11 @@
     &quot;git-widget-placeholder&quot;: &quot;master&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ryanm\Documents\GitHub\GitHub\DefiTuna_PDN_Ex" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -92,12 +97,29 @@
       <option name="project" value="LOCAL" />
       <updated>1735872483337</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added hodl line, highlighted the range">
+      <option name="closed" value="true" />
+      <created>1735908740122</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1735908740122</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added hodl line, highlighted the range">
+      <option name="closed" value="true" />
+      <created>1735908781025</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1735908781025</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init commit" />
     <MESSAGE value="2 additional prints" />
-    <option name="LAST_COMMIT_MESSAGE" value="2 additional prints" />
+    <MESSAGE value="Added hodl line, highlighted the range" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added hodl line, highlighted the range" />
   </component>
 </project>

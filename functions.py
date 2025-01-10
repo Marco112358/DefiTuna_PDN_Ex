@@ -270,11 +270,50 @@ def add_empirical_gamma(df):
     return df
 
 
-def process_dataframe_summaries(df1: pd.DataFrame,
-                                df7: pd.DataFrame,
-                                df30: pd.DataFrame,
-                                column_names: list,
-                                P: float) -> pd.DataFrame:
+def process_dataframe_summaries(
+                          dfs: list[pd.DataFrame],
+                          columns: list[str],
+                          periods: list[str],
+                          reference_price: float) -> pd.DataFrame:
+    """
+    Concatenate and rename columns for specific metrics from multiple DataFrames.
+
+    Parameters
+    ----------
+    dfs : list of pd.DataFrame
+        DataFrame containing data for 1 day.
+    columns : list strings
+        A list of column names to extract and concatenate from each DataFrame.
+    periods: list of strings
+        A list of the strings that reference the periods of the dfs
+    reference_price : float
+        The reference price used to normalize the index.
+
+    Returns
+   -------
+    pd.DataFrame
+        A new DataFrame with the concatenated and renamed columns and normalized index.
+    """
+
+    filtered_dfs = [df.loc[:, columns] for df in dfs]
+    combined_df = pd.concat(filtered_dfs, axis=1)
+
+    new_columns = [
+        f"{period} - {col}"
+        for period in periods
+        for col in columns
+    ]
+    combined_df.columns = new_columns
+
+    # Normalize index to percentage change from reference price
+    combined_df.index = ((combined_df.index / reference_price - 1) * 100).round(4)
+    return combined_df
+
+
+def process_dataframe_summaries2(df1: pd.DataFrame,
+                                 df7: pd.DataFrame,
+                                 column_names: list,
+                                 P: float) -> pd.DataFrame:
     """
     Concatenate and rename columns for specific metrics from multiple DataFrames.
 
@@ -299,15 +338,13 @@ def process_dataframe_summaries(df1: pd.DataFrame,
     # Filter the DataFrames to include only the specified columns
     filtered_df1 = df1.loc[:, column_names]
     filtered_df7 = df7.loc[:, column_names]
-    filtered_df30 = df30.loc[:, column_names]
 
     # Concatenate the specified columns from each DataFrame
-    combined_df = pd.concat([filtered_df1, filtered_df7, filtered_df30], axis=1)
+    combined_df = pd.concat([filtered_df1, filtered_df7], axis=1)
 
     # Rename columns
     new_column_names = [f"1 Day - {col}" for col in column_names] + \
-                       [f"7 Days - {col}" for col in column_names] + \
-                       [f"30 Days - {col}" for col in column_names]
+                       [f"7 Days - {col}" for col in column_names]
     combined_df.columns = new_column_names
 
     # Normalize the index based on the reference price
@@ -323,10 +360,14 @@ def create_line_graph(data: pd.DataFrame,
                       xaxis_dtick: float = None,
                       yaxis_dtick: float = None,
                       highlight_range: tuple = None,
-                      highlight_color: str = 'rgba(255, 230, 153, 0.5)') -> go.Figure:
+                      highlight_color: str = 'rgba(255, 230, 153, 0.5)',
+                      xaxis_min: float = None,
+                      xaxis_max: float = None,
+                      yaxis_min: float = None,
+                      yaxis_max: float = None) -> go.Figure:
     """
-    Create a line graph using Plotly from a given DataFrame with customizable gridlines
-    and an optional highlighted vertical range.
+    Create a line graph using Plotly from a given DataFrame with customizable gridlines,
+    an optional highlighted vertical range, and axis ranges.
 
     Parameters
     ----------
@@ -349,6 +390,14 @@ def create_line_graph(data: pd.DataFrame,
         A tuple of two x-axis values (start, end) to highlight a vertical range. If None, no range is highlighted.
     highlight_color : str, optional
         The fill color for the highlighted range. Default is a semi-transparent yellow.
+    xaxis_min : float, optional
+        Minimum value for x-axis. If None, will auto-scale.
+    xaxis_max : float, optional
+        Maximum value for x-axis. If None, will auto-scale.
+    yaxis_min : float, optional
+        Minimum value for y-axis. If None, will auto-scale.
+    yaxis_max : float, optional
+        Maximum value for y-axis. If None, will auto-scale.
 
     Returns
     -------
@@ -396,12 +445,14 @@ def create_line_graph(data: pd.DataFrame,
         xaxis=dict(
             tickmode='linear',  # Linear mode for evenly spaced ticks
             dtick=xaxis_dtick,  # Custom spacing if provided
-            showgrid=True  # Enable gridlines
+            showgrid=True,  # Enable gridlines
+            range=[xaxis_min, xaxis_max] if xaxis_min is not None and xaxis_max is not None else None
         ),
         yaxis=dict(
             tickmode='linear',  # Linear mode for evenly spaced ticks
             dtick=yaxis_dtick,  # Custom spacing if provided
-            showgrid=True  # Enable gridlines
+            showgrid=True,  # Enable gridlines
+            range=[yaxis_min, yaxis_max] if yaxis_min is not None and yaxis_max is not None else None
         )
     )
     return fig
@@ -415,6 +466,3 @@ def add_hodl_position(df: pd.DataFrame,
     df['HODL Equity'] = risky_token * df.index + usdc
     df['HODL Return'] = (df['HODL Equity'] / (risky_token * p0 + usdc) - 1) * 100
     return df
-
-
-
